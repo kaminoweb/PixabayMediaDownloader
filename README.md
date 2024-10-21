@@ -1,12 +1,11 @@
 # Pixabay Media Downloader
 
-**Contributors:** yourusername  
+**Contributors:** Jeff Lebon at KAMINOWEB INC
 **Tags:** media, pixabay, downloader, images, media library  
 **Requires at least:** 5.0  
 **Tested up to:** 6.2  
 **Stable tag:** 1.2  
-**License:** GPLv2 or later  
-**License URI:** [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)
+**License:** This project is licensed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for details.
 
 Search and download Pixabay images directly to your WordPress media library with refined search options for orientation and size.
 
