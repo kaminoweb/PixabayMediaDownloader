@@ -1,6 +1,6 @@
 # Pixabay Media Downloader
 
-**Contributors:** Jeff Lebon at KAMINOWEB INC  
+**Contributors:** KAMINOWEB INC  
 **Tags:** media, pixabay, downloader, images, media library  
 **Requires at least:** 5.0  
 **Tested up to:** 6.6.2  
