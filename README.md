@@ -3,11 +3,9 @@
 **Contributors:** Jeff Lebon at KAMINOWEB INC
 **Tags:** media, pixabay, downloader, images, media library  
 **Requires at least:** 5.0  
-**Tested up to:** 6.2  
+**Tested up to:** 6.6.2 
 **Stable tag:** 1.2  
 **License:** This project is licensed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for details.
-
-Search and download Pixabay images directly to your WordPress media library with refined search options for orientation and size.
 
 ## Description
 
@@ -27,7 +25,7 @@ Pixabay Media Downloader allows you to search for images on Pixabay, filter them
 ## Installation
 
 1. **Upload the Plugin:**
-   - Upload the `pixabay-media-downloader` folder to the `/wp-content/plugins/` directory.
+   - Upload the `PixabayMediaDownloader` folder to the `/wp-content/plugins/` directory.
 
 2. **Activate the Plugin:**
    - Activate the plugin through the 'Plugins' menu in WordPress.
