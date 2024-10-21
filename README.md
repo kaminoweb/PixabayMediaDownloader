@@ -1,19 +1,21 @@
-=== Pixabay Media Downloader ===
-Contributors: yourusername
-Tags: media, pixabay, downloader, images, media library
-Requires at least: 5.0
-Tested up to: 6.2
-Stable tag: 1.2
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+# Pixabay Media Downloader
+
+**Contributors:** yourusername  
+**Tags:** media, pixabay, downloader, images, media library  
+**Requires at least:** 5.0  
+**Tested up to:** 6.2  
+**Stable tag:** 1.2  
+**License:** GPLv2 or later  
+**License URI:** [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)
 
 Search and download Pixabay images directly to your WordPress media library with refined search options for orientation and size.
 
-== Description ==
+## Description
 
 Pixabay Media Downloader allows you to search for images on Pixabay, filter them by orientation and size, browse through paginated results, select multiple images, and download them directly into your WordPress media library. The plugin seamlessly integrates with the WordPress admin theme, ensuring a responsive and user-friendly interface.
 
-**Key Features:**
+### Key Features
+
 - **Search Functionality:** Easily search for images using keywords.
 - **Orientation Filters:** Filter images by horizontal, vertical, or any orientation.
 - **Picture Size Filters:** Specify minimum width and height to refine search results.
@@ -23,7 +25,7 @@ Pixabay Media Downloader allows you to search for images on Pixabay, filter them
 - **Responsive Design:** Optimized for all device sizes.
 - **WordPress Integration:** Utilizes WordPress's built-in styles and Dashicons for a consistent look and feel.
 
-== Installation ==
+## Installation
 
 1. **Upload the Plugin:**
    - Upload the `pixabay-media-downloader` folder to the `/wp-content/plugins/` directory.
@@ -37,32 +39,33 @@ Pixabay Media Downloader allows you to search for images on Pixabay, filter them
 4. **Using the Plugin:**
    - Go to **Media > Pixabay Downloader** to start searching and downloading images.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions
 
-= How do I obtain a Pixabay API key? =
+### How do I obtain a Pixabay API key?
 
 Visit the [Pixabay API Documentation](https://pixabay.com/api/docs/) to sign up and obtain your free API key.
 
-= Can I filter images by orientation and size? =
+### Can I filter images by orientation and size?
 
 Yes! The plugin provides options to filter images by orientation (horizontal, vertical, any) and specify minimum width and height in pixels.
 
-= What image formats are supported? =
+### What image formats are supported?
 
 The plugin supports various image formats provided by Pixabay, defaulting to `.jpg` if the format is unspecified.
 
-== Changelog ==
+## Changelog
 
-= 1.2 =
-* Added orientation filters (horizontal, vertical, any) to the search form.
-* Added picture size filters (minimum width and height) to refine search results.
-* Enhanced filename generation to include sanitized search queries and unique image IDs.
-* Improved responsive design for better usability on various devices.
+### 1.2
+- Added orientation filters (horizontal, vertical, any) to the search form.
+- Added picture size filters (minimum width and height) to refine search results.
+- Enhanced filename generation to include sanitized search queries and unique image IDs.
+- Improved responsive design for better usability on various devices.
 
-= 1.1 =
-* Enhanced filename generation to include sanitized search queries and unique image IDs.
-* Improved error handling and user feedback mechanisms.
-* Updated UI for better accessibility and responsiveness.
+### 1.1
+- Enhanced filename generation to include sanitized search queries and unique image IDs.
+- Improved error handling and user feedback mechanisms.
+- Updated UI for better accessibility and responsiveness.
 
-= 1.0 =
-* Initial release.
+### 1.0
+- Initial release.
+
