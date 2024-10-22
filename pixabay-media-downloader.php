@@ -2,7 +2,7 @@
 /*
 Plugin Name: Pixabay Media Downloader
 Description: Search and download Pixabay images directly to your WordPress media library.
-Version: 1.2
+Version: 1.1
 Author: Your Name
 License: GPL2
 */
@@ -30,18 +30,18 @@ class PixabayMediaDownloader {
         add_action('admin_init', array($this, 'register_settings'));
     }
 
-    // Register settings for API key
+    // Register settings for Pixabay API key
     public function register_settings() {
-        register_setting('pmd_settings_group', 'pmd_api_key', array(
+        register_setting('pmd_pixabay_settings_group', 'pmd_pixabay_api_key', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'default' => '',
         ));
     }
 
-    // Get API key from settings
+    // Get Pixabay API key from settings
     private function get_api_key() {
-        return get_option('pmd_api_key', '');
+        return get_option('pmd_pixabay_api_key', '');
     }
 
     // Add menu and settings page
@@ -51,7 +51,7 @@ class PixabayMediaDownloader {
             'Pixabay Media Downloader Settings',
             'Pixabay Downloader',
             'manage_options',
-            'pmd-settings',
+            'pmd_pixabay_settings',
             array($this, 'render_settings_page')
         );
 
@@ -72,14 +72,14 @@ class PixabayMediaDownloader {
             <h1>Pixabay Media Downloader Settings</h1>
             <form method="post" action="options.php">
                 <?php
-                settings_fields('pmd_settings_group');
-                do_settings_sections('pmd_settings_group');
+                settings_fields('pmd_pixabay_settings_group');
+                do_settings_sections('pmd_pixabay_settings_group');
                 ?>
                 <table class="form-table">
                     <tr valign="top">
                         <th scope="row">Pixabay API Key</th>
                         <td>
-                            <input type="text" name="pmd_api_key" value="<?php echo esc_attr($this->api_key); ?>" size="50" required />
+                            <input type="text" name="pmd_pixabay_api_key" value="<?php echo esc_attr($this->api_key); ?>" size="50" required />
                             <p class="description">Obtain your Pixabay API key from <a href="https://pixabay.com/api/docs/" target="_blank">Pixabay API Documentation</a>.</p>
                         </td>
                     </tr>
@@ -93,30 +93,30 @@ class PixabayMediaDownloader {
     // Enqueue scripts and styles
     public function enqueue_scripts($hook) {
         // Load scripts only on our plugin pages
-        if ($hook !== 'media_page_pixabay-downloader' && $hook !== 'settings_page_pmd-settings') {
+        if ($hook !== 'media_page_pixabay-downloader' && $hook !== 'settings_page_pmd_pixabay_settings') {
             return;
         }
 
         // Enqueue CSS
-        wp_enqueue_style('pmd-styles', PMD_PLUGIN_URL . 'css/styles.css', array(), '1.2');
+        wp_enqueue_style('pmd-styles', PMD_PLUGIN_URL . 'css/styles.css', array(), '1.1');
 
         // Enqueue Dashicons
         wp_enqueue_style('dashicons');
 
         // Enqueue JavaScript
-        wp_enqueue_script('pmd-scripts', PMD_PLUGIN_URL . 'js/scripts.js', array('jquery'), '1.2', true);
+        wp_enqueue_script('pmd-scripts', PMD_PLUGIN_URL . 'js/scripts.js', array('jquery'), '1.1', true);
 
         // Localize script with AJAX URL and nonce
         wp_localize_script('pmd-scripts', 'pmd_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('pmd_nonce'),
+            'nonce'    => wp_create_nonce('pmd_nonce_pixabay'),
         ));
     }
 
     // Render the main plugin page
     public function render_plugin_page() {
         if (!$this->api_key) {
-            echo '<div class="notice notice-warning"><p>Please set your Pixabay API key in the <a href="' . admin_url('options-general.php?page=pmd-settings') . '">settings page</a>.</p></div>';
+            echo '<div class="notice notice-warning"><p>Please set your Pixabay API key in the <a href="' . admin_url('options-general.php?page=pmd_pixabay_settings') . '">settings page</a>.</p></div>';
             return;
         }
         ?>
@@ -146,7 +146,7 @@ class PixabayMediaDownloader {
 
     // Handle Pixabay API search
     public function search_pixabay() {
-        check_ajax_referer('pmd_nonce', 'nonce');
+        check_ajax_referer('pmd_nonce_pixabay', 'nonce');
 
         if (!$this->api_key) {
             wp_send_json_error('API key not set.');
@@ -196,7 +196,7 @@ class PixabayMediaDownloader {
 
     // Handle image downloads
     public function download_images() {
-        check_ajax_referer('pmd_nonce', 'nonce');
+        check_ajax_referer('pmd_nonce_pixabay', 'nonce');
 
         if (!current_user_can('upload_files')) {
             wp_send_json_error('Unauthorized user.');
