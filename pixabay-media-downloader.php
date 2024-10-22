@@ -3,8 +3,8 @@
  * Plugin Name: Pixabay Media Downloader
  * Description: Download images from Pixabay directly into your WordPress Media Library.
  * Version: 1.0.0
- * Author: Your Name
- * Author URI: https://yourwebsite.com
+ * Author: Your KAMINOWEB INC
+ * Author URI: https://kaminoweb.com
  * Text Domain: pixabay-media-downloader
  */
 
