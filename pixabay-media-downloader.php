@@ -3,8 +3,8 @@
  * Plugin Name: Pixabay Media Downloader
  * Description: Download images from Pixabay directly into your WordPress Media Library.
  * Version: 1.0.0
- * Author: Your KAMINOWEB INC
- * Author URI: https://kaminoweb.com
+ * Author: Your Name
+ * Author URI: https://yourwebsite.com
  * Text Domain: pixabay-media-downloader
  */
 
@@ -264,7 +264,17 @@ class PMD_Pixabay_Media_Downloader {
         }
 
         // Retrieve and sanitize POST data
-        $images = isset( $_POST['images'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['images'] ) ) : array();
+$images = array();
+
+if ( isset( $_POST['images'] ) && is_array( $_POST['images'] ) ) {
+    foreach ( wp_unslash( $_POST['images'] ) as $image ) {
+        $images[] = array(
+            'url' => isset( $image['url'] ) ? esc_url_raw( $image['url'] ) : '',
+            'id'  => isset( $image['id'] ) ? sanitize_text_field( $image['id'] ) : uniqid(),
+        );
+    }
+}
+
         $query  = isset( $_POST['query'] ) ? sanitize_text_field( wp_unslash( $_POST['query'] ) ) : '';
 
         if ( empty( $images ) || ! is_array( $images ) ) {
