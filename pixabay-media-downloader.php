@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Pixabay Media Downloader
+ * Plugin URI: https://kaminoweb.com/
  * Description: Download images from Pixabay directly into your WordPress Media Library.
  * Version: 1.0.0
- * Author: Your Name
- * Author URI: https://yourwebsite.com
- * Text Domain: pixabay-media-downloader
+ * Author: KAMINOWEB INC
+ * Author URI: https://kaminoweb.com/
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -142,10 +142,10 @@ class PMD_Pixabay_Media_Downloader {
                 <input type="number" id="pmd-pixabay-min-width" name="min_width" placeholder="<?php esc_attr_e( 'Min Width (px)', 'pixabay-media-downloader' ); ?>" min="0" />
                 <input type="number" id="pmd-pixabay-min-height" name="min_height" placeholder="<?php esc_attr_e( 'Min Height (px)', 'pixabay-media-downloader' ); ?>" min="0" />
 
-                <button type="submit" class="button button-primary"><span class="dashicons dashicons-search"></span> <?php esc_html_e( 'Search', 'pixabay-media-downloader' ); ?></button>
+                <button type="submit" class="button button-primary"><?php esc_html_e( 'Search', 'pixabay-media-downloader' ); ?></button>
             </form>
             <div id="pmd-pixabay-results"></div>
-            <button id="pmd-pixabay-download-selected" class="button button-success"><span class="dashicons dashicons-download"></span> <?php esc_html_e( 'Download Selected', 'pixabay-media-downloader' ); ?></button>
+            <button id="pmd-pixabay-download-selected" class="button button-primary"><strong><?php esc_html_e( 'Download Selected', 'pixabay-media-downloader' ); ?></strong></button>
         </div>
         <?php
     }
