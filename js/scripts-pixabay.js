@@ -88,7 +88,7 @@
             data.hits.forEach(function (hit) {
                 html += `
                     <div class="pmd-image">
-                        <img src="${hit.previewURL}" alt="${hit.tags}" />
+                        <img src="${hit.webformatURL}" alt="${hit.tags}" />
                         <label>
                             <input type="checkbox" data-url="${hit.largeImageURL}" data-id="${hit.id}" />
                             Select
