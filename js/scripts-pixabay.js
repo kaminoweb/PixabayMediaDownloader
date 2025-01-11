@@ -169,8 +169,7 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert(response.data); // Notify the user of successful downloads
-                        // Optionally, you can refresh the media library or perform other actions here
+                        alert('Download successful!'); // Notify the user of successful downloads
                     } else {
                         // Notify the user of any errors returned from the server
                         alert('Error: ' + response.data);
@@ -189,4 +188,3 @@
         });
     });
 })(jQuery);
-
