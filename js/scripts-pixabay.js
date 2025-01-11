@@ -109,10 +109,6 @@
                 return;
             }
 
-            if (!confirm(__('Are you sure you want to download ' + selected.length + ' image(s)?', 'pixabay-media-downloader'))) {
-                return;
-            }
-
             $('#pmd-pixabay-download-selected').prop('disabled', true).html('<span class="dashicons dashicons-download"></span> ' + __('Downloading...', 'pixabay-media-downloader'));
 
             $.ajax({
@@ -126,7 +122,7 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert(response.data);
+                        alert(response.data); // Show success message without checkbox
                     } else {
                         alert(__('Error: ', 'pixabay-media-downloader') + response.data);
                     }
