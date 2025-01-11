@@ -89,10 +89,6 @@
                 html += `
                     <div class="pmd-image">
                         <img src="${hit.webformatURL}" alt="${hit.tags}" />
-                        <label>
-                            <input type="checkbox" data-url="${hit.largeImageURL}" data-id="${hit.id}" />
-                            Select
-                        </label>
                     </div>
                 `;
             });
