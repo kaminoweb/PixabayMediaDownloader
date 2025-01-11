@@ -89,6 +89,10 @@
                 html += `
                     <div class="pmd-image">
                         <img src="${hit.webformatURL}" alt="${hit.tags}" />
+                        <label>
+                            <input type="checkbox" data-url="${hit.largeImageURL}" data-id="${hit.id}" />
+                            Select
+                        </label>
                     </div>
                 `;
             });
@@ -165,7 +169,8 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert('Download successful!'); // Notify the user of successful downloads
+                         alert(response.data); // Notify the user of successful downloads
+                         // Optionally, you can refresh the media library or perform other actions here
                     } else {
                         // Notify the user of any errors returned from the server
                         alert('Error: ' + response.data);
