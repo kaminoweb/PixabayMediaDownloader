@@ -147,6 +147,18 @@ class PMD_Pixabay_Media_Downloader {
             <div id="pmd-pixabay-results"></div>
             <button id="pmd-pixabay-download-selected" class="button button-primary"><strong><?php esc_html_e( 'Download Selected', 'pixabay-media-downloader' ); ?></strong></button>
         </div>
+
+        <!-- Custom Modal -->
+        <div id="custom-popup" class="custom-popup">
+            <div class="custom-popup-content">
+                <span class="close-button">&times;</span>
+                <p id="custom-popup-message">Images downloaded successfully!</p>
+                <label>
+                    <input type="checkbox" id="dont-show-again" />
+                    <?php esc_html_e( "Don't allow website to prompt you again", 'pixabay-media-downloader' ); ?>
+                </label>
+            </div>
+        </div>
         <?php
     }
 
@@ -264,16 +276,16 @@ class PMD_Pixabay_Media_Downloader {
         }
 
         // Retrieve and sanitize POST data
-$images = array();
+        $images = array();
 
-if ( isset( $_POST['images'] ) && is_array( $_POST['images'] ) ) {
-    foreach ( wp_unslash( $_POST['images'] ) as $image ) {
-        $images[] = array(
-            'url' => isset( $image['url'] ) ? esc_url_raw( $image['url'] ) : '',
-            'id'  => isset( $image['id'] ) ? sanitize_text_field( $image['id'] ) : uniqid(),
-        );
-    }
-}
+        if ( isset( $_POST['images'] ) && is_array( $_POST['images'] ) ) {
+            foreach ( wp_unslash( $_POST['images'] ) as $image ) {
+                $images[] = array(
+                    'url' => isset( $image['url'] ) ? esc_url_raw( $image['url'] ) : '',
+                    'id'  => isset( $image['id'] ) ? sanitize_text_field( $image['id'] ) : uniqid(),
+                );
+            }
+        }
 
         $query  = isset( $_POST['query'] ) ? sanitize_text_field( wp_unslash( $_POST['query'] ) ) : '';
 
@@ -376,4 +388,3 @@ if ( isset( $_POST['images'] ) && is_array( $_POST['images'] ) ) {
 
 // Initialize the plugin
 new PMD_Pixabay_Media_Downloader();
-
