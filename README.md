@@ -4,7 +4,7 @@
 **Tags:** media, pixabay, downloader, images, media library  
 **Requires at least:** 5.0  
 **Tested up to:** 6.6.2  
-**Stable tag:** 1.3  
+**Stable tag:** 1.2  
 **License URI:** [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Description
@@ -51,9 +51,6 @@ Yes! The plugin provides options to filter images by orientation (horizontal, ve
 The plugin supports various image formats provided by Pixabay, defaulting to `.jpg` if the format is unspecified.
 
 ## Changelog
-
-### 1.3
-- Improvement to avoid conflicts .
 
 ### 1.2
 - Added orientation filters (horizontal, vertical, any) to the search form.
