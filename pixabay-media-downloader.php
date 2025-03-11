@@ -6,6 +6,8 @@
  * Version: 1.0.0
  * Author: KAMINOWEB INC
  * Author URI: https://kaminoweb.com/
+ * License: GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -146,18 +148,6 @@ class PMD_Pixabay_Media_Downloader {
             </form>
             <div id="pmd-pixabay-results"></div>
             <button id="pmd-pixabay-download-selected" class="button button-primary"><strong><?php esc_html_e( 'Download Selected', 'pixabay-media-downloader' ); ?></strong></button>
-        </div>
-
-        <!-- Custom Modal -->
-        <div id="custom-popup" class="custom-popup">
-            <div class="custom-popup-content">
-                <span class="close-button">&times;</span>
-                <p id="custom-popup-message">Images downloaded successfully!</p>
-                <label>
-                    <input type="checkbox" id="dont-show-again" />
-                    <?php esc_html_e( "Don't allow website to prompt you again", 'pixabay-media-downloader' ); ?>
-                </label>
-            </div>
         </div>
         <?php
     }
@@ -339,7 +329,7 @@ class PMD_Pixabay_Media_Downloader {
 
             if ( $image_data ) {
                 // Save the image to the uploads directory
-                $saved = file_put_contents( $file_path, $image_data );
+                $saved = file_put_contents( $file_path, $image_data ); // Save image data to file
 
                 if ( false === $saved ) {
                     $failed++;
@@ -347,7 +337,7 @@ class PMD_Pixabay_Media_Downloader {
                 }
 
                 // Check the file type
-                $wp_filetype = wp_check_filetype( $filename, null );
+                $wp_filetype = wp_check_filetype( $filename, null ); // Determine file type based on filename
 
                 // Prepare attachment data
                 $attachment = array(
@@ -358,7 +348,7 @@ class PMD_Pixabay_Media_Downloader {
                 );
 
                 // Insert the attachment
-                $attach_id = wp_insert_attachment( $attachment, $file_path );
+                $attach_id = wp_insert_attachment( $attachment, $file_path ); // Insert attachment post type
 
                 if ( is_wp_error( $attach_id ) ) {
                     $failed++;
@@ -367,8 +357,8 @@ class PMD_Pixabay_Media_Downloader {
 
                 // Generate metadata and update attachment
                 require_once( ABSPATH . 'wp-admin/includes/image.php' );
-                $attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
-                wp_update_attachment_metadata( $attach_id, $attach_data );
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $file_path ); // Generate attachment metadata
+                wp_update_attachment_metadata( $attach_id, $attach_data ); // Update attachment metadata
 
                 $downloaded++;
             } else {

@@ -22,7 +22,7 @@
 
             // Validate the search query
             if (currentQuery === '') {
-                showCustomPopup('Please enter a search query.');
+                alert('Please enter a search query.');
                 return;
             }
 
@@ -57,14 +57,14 @@
                     if (response.success) {
                         displayResults(response.data); // Display the fetched images
                     } else {
-                        // Display the error message using custom popup
-                        showCustomPopup('Error: ' + response.data);
+                        // Display the error message returned from the server
+                        $('#pmd-pixabay-results').html('<div class="notice notice-error"><p>Error: ' + response.data + '</p></div>');
                         console.error('Pixabay API Error:', response.data);
                     }
                 },
                 error: function (xhr, status, error) {
-                    // Handle unexpected errors using custom popup
-                    showCustomPopup('An unexpected error occurred.');
+                    // Handle unexpected errors
+                    $('#pmd-pixabay-results').html('<div class="notice notice-error"><p>An unexpected error occurred.</p></div>');
                     console.error('AJAX Error:', status, error);
                 }
             });
@@ -77,7 +77,7 @@
         function displayResults(data) {
             // Check if any images were found
             if (data.hits.length === 0) {
-                showCustomPopup('No images found.');
+                $('#pmd-pixabay-results').html('<div class="notice notice-info"><p>No images found.</p></div>');
                 return;
             }
 
@@ -145,23 +145,15 @@
 
             // Validate that at least one image is selected
             if (selected.length === 0) {
-                showCustomPopup('No images selected.');
+                alert('No images selected.');
                 return;
             }
 
-            // Confirm the download action with the user using custom popup
-            showCustomConfirm('Are you sure you want to download ' + selected.length + ' image(s)?', function(confirmed) {
-                if (confirmed) {
-                    initiateDownload(selected);
-                }
-            });
-        });
+            // Confirm the download action with the user
+            if ( ! confirm( `Are you sure you want to download ${selected.length} image(s)?` ) ) {
+                return;
+            }
 
-        /**
-         * Function to initiate the AJAX download request
-         * @param {Array} selectedImages - Array of selected images with URLs and IDs
-         */
-        function initiateDownload(selectedImages) {
             // Disable the download button to prevent multiple submissions
             $('#pmd-pixabay-download-selected').prop('disabled', true).html('<span class="dashicons dashicons-download"></span> Downloading...');
 
@@ -171,22 +163,22 @@
                 method: 'POST',
                 data: {
                     action: 'pmd_pixabay_download_images', // The AJAX action hook
-                    images: selectedImages,
+                    images: selected,
                     query: currentQuery, // Include the current search query for filename context
                     nonce: pmd_pixabay_ajax.nonce // Security nonce
                 },
                 success: function (response) {
                     if (response.success) {
-                        showCustomPopup(response.data); // Notify the user of successful downloads
-                        // Optionally, you can refresh the media library or perform other actions here
+                         alert(response.data); // Notify the user of successful downloads
+                         // Optionally, you can refresh the media library or perform other actions here
                     } else {
                         // Notify the user of any errors returned from the server
-                        showCustomPopup('Error: ' + response.data);
+                        alert('Error: ' + response.data);
                     }
                 },
                 error: function (xhr, status, error) {
                     // Handle unexpected errors
-                    showCustomPopup('An unexpected error occurred.');
+                    alert('An unexpected error occurred.');
                     console.error('AJAX Error:', status, error);
                 },
                 complete: function () {
@@ -194,82 +186,6 @@
                     $('#pmd-pixabay-download-selected').prop('disabled', false).html('<span class="dashicons dashicons-download"></span> Download Selected');
                 }
             });
-        }
-
-        /**
-         * Function to display the custom popup
-         * @param {String} message - The message to display in the popup
-         */
-        function showCustomPopup(message) {
-            const popup = $('#custom-popup');
-            $('#custom-popup-message').text(message);
-            popup.show();
-
-            // Handle the close button click
-            popup.find('.close-button').off('click').on('click', function() {
-                popup.hide();
-                handleDoNotShowAgain();
-            });
-
-            // Handle clicking outside the popup content
-            $(window).off('click').on('click', function(event) {
-                if ($(event.target).is(popup)) {
-                    popup.hide();
-                    handleDoNotShowAgain();
-                }
-            });
-        }
-
-        /**
-         * Function to display a custom confirmation popup
-         * @param {String} message - The confirmation message
-         * @param {Function} callback - Callback function with boolean parameter indicating confirmation
-         */
-        function showCustomConfirm(message, callback) {
-            const popup = $('#custom-popup');
-            $('#custom-popup-message').text(message);
-            $('#dont-show-again').parent().show(); // Show the checkbox
-            popup.show();
-
-            // Handle the close button as 'Cancel'
-            popup.find('.close-button').off('click').on('click', function() {
-                popup.hide();
-                $('#dont-show-again').parent().hide();
-                callback(false);
-                handleDoNotShowAgain();
-            });
-
-            // Handle clicking outside the popup content as 'Cancel'
-            $(window).off('click').on('click', function(event) {
-                if ($(event.target).is(popup)) {
-                    popup.hide();
-                    $('#dont-show-again').parent().hide();
-                    callback(false);
-                    handleDoNotShowAgain();
-                }
-            });
-
-            // Handle confirming the action
-            popup.find('.custom-popup-content').append('<button id="confirm-action" class="button button-primary" style="margin-top: 15px;">OK</button>');
-            $('#confirm-action').off('click').on('click', function() {
-                popup.hide();
-                $('#dont-show-again').parent().hide();
-                callback(true);
-                handleDoNotShowAgain();
-                $(this).remove();
-            });
-        }
-
-        /**
-         * Function to handle "Don't allow website to prompt you again" checkbox
-         */
-        function handleDoNotShowAgain() {
-            const dontShow = $('#dont-show-again').is(':checked');
-            if (dontShow) {
-                // Store the preference using localStorage
-                localStorage.setItem('pmd_hide_popup', 'true');
-            }
-        }
-
+        });
     });
 })(jQuery);
