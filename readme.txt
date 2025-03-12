@@ -1,7 +1,6 @@
 === Pixabay Media Downloader ===
 Contributors: kaminoweb
 Plugin Name: Pixabay Media Downloader
-Plugin URI: https://kaminoweb.com/
 Author URI: https://kaminoweb.com/
 Tags: media, pixabay, downloader, images, media library
 Requires at least: 5.0
