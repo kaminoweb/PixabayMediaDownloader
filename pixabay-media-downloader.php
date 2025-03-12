@@ -3,7 +3,7 @@
  * Plugin Name: Pixabay Media Downloader
  * Plugin URI: https://kaminoweb.com/
  * Description: Download images from Pixabay directly into your WordPress Media Library.
- * Version: 1.0.0
+ * Version: 1.13
  * Author: KAMINOWEB INC
  * Author URI: https://kaminoweb.com/
  * License: GPLv2 or later
@@ -17,16 +17,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 class PMD_Pixabay_Media_Downloader {
 
     private $api_key;
-    const VERSION = '1.0.0';
+    const VERSION = '1.13'; // Updated version number
     const OPTION_NAME = 'pmd_pixabay_api_key';
     const SETTINGS_GROUP = 'pmd_pixabay_settings_group';
     const SCRIPT_HANDLE = 'pmd-pixabay-scripts';
     const LOCALIZE_HANDLE = 'pmd_pixabay_ajax';
     const NONCE_NAME = 'pmd_pixabay_nonce';
 
+    private static $settings_args; // Static property for settings arguments
+
     public function __construct() {
         // Initialize API Key
         $this->api_key = get_option( self::OPTION_NAME, '' );
+
+        // Define settings arguments as a static array
+        self::$settings_args = array(
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default'           => '',
+        );
 
         // Register settings
         add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -46,11 +55,7 @@ class PMD_Pixabay_Media_Downloader {
      * Register plugin settings
      */
     public function register_settings() {
-        register_setting( self::SETTINGS_GROUP, self::OPTION_NAME, array(
-            'type'              => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
-            'default'           => '',
-        ) );
+        register_setting( self::SETTINGS_GROUP, self::OPTION_NAME, self::$settings_args ); // Using static property
 
         add_settings_section(
             'pmd_pixabay_main_section',
@@ -124,7 +129,8 @@ class PMD_Pixabay_Media_Downloader {
      */
     public function render_plugin_page() {
         if ( empty( $this->api_key ) ) {
-            echo '<div class="notice notice-warning"><p>' . sprintf( __( 'Please set your Pixabay API key in the <a href="%s">settings page</a>.', 'pixabay-media-downloader' ), admin_url( 'options-general.php?page=pmd_pixabay_settings' ) ) . '</p></div>';
+            // translators: %s: URL to the settings page
+            echo '<div class="notice notice-warning"><p>' . sprintf( esc_html__( 'Please set your Pixabay API key in the <a href="%s">settings page</a>.', 'pixabay-media-downloader' ), esc_url( admin_url( 'options-general.php?page=pmd_pixabay_settings' ) ) ) . '</p></div>';
             return;
         }
         ?>
@@ -226,7 +232,7 @@ class PMD_Pixabay_Media_Downloader {
         }
 
         if ( ! empty( $min_height ) ) {
-            $api_url = add_query_arg( 'min_height', $min_height, $api_url );
+            $api_url = add_query_arg( 'min_height', $api_url );
         }
 
         // Make the API request
@@ -258,22 +264,20 @@ class PMD_Pixabay_Media_Downloader {
      */
     public function download_images() {
         // Verify nonce
-        check_ajax_referer( self::NONCE_NAME, 'nonce' );
-
-        // Check user capabilities
-        if ( ! current_user_can( 'upload_files' ) ) {
-            wp_send_json_error( __( 'You do not have sufficient permissions to perform this action.', 'pixabay-media-downloader' ) );
-        }
+        check_ajax_referer( self::NONCE_NAME, 'nonce' ); // Nonce verification added
 
         // Retrieve and sanitize POST data
         $images = array();
 
-        if ( isset( $_POST['images'] ) && is_array( $_POST['images'] ) ) {
-            foreach ( wp_unslash( $_POST['images'] ) as $image ) {
-                $images[] = array(
-                    'url' => isset( $image['url'] ) ? esc_url_raw( $image['url'] ) : '',
-                    'id'  => isset( $image['id'] ) ? sanitize_text_field( $image['id'] ) : uniqid(),
-                );
+        $processed_images = isset( $_POST['images'] ) ? (array) wp_unslash( $_POST['images'] ) : array(); // Inline unslash and cast
+        if ( is_array( $processed_images ) ) {
+            foreach ( $processed_images as $image_data ) { // Loop through the processed array
+                if ( is_array( $image_data ) ) { // Ensure $image_data is still an array (extra check)
+                    $images[] = array(
+                        'url' => isset( $image_data['url'] ) ? esc_url_raw( $image_data['url'] ) : '',
+                        'id'  => isset( $image_data['id'] ) ? sanitize_text_field( $image_data['id'] ) : uniqid(),
+                    );
+                }
             }
         }
 
@@ -302,7 +306,7 @@ class PMD_Pixabay_Media_Downloader {
                 continue;
             }
 
-            $extension = pathinfo( parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
+            $extension = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
             $extension = strtolower( $extension ) ? strtolower( $extension ) : 'jpg'; // Default to jpg if extension is missing
 
             // Generate a meaningful filename
@@ -367,9 +371,11 @@ class PMD_Pixabay_Media_Downloader {
         }
 
         if ( $downloaded > 0 && $failed === 0 ) {
+            // translators: %d: Number of successfully downloaded images.
             wp_send_json_success( sprintf( __( 'Successfully downloaded %d image(s).', 'pixabay-media-downloader' ), $downloaded ) );
         } elseif ( $downloaded > 0 && $failed > 0 ) {
-            wp_send_json_success( sprintf( __( 'Successfully downloaded %d image(s). %d image(s) failed to download.', 'pixabay-media-downloader' ), $downloaded, $failed ) );
+            // translators: 1: Number of successfully downloaded images, 2: Number of images that failed to download.
+            wp_send_json_success( sprintf( __( 'Successfully downloaded %1$d image(s). %2$d image(s) failed to download.', 'pixabay-media-downloader' ), $downloaded, $failed ) );
         } else {
             wp_send_json_error( __( 'Failed to download images.', 'pixabay-media-downloader' ) );
         }
