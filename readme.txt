@@ -5,7 +5,7 @@ Author URI: https://kaminoweb.com/
 Tags: media, pixabay, downloader, images, media library
 Requires at least: 5.0
 Requires PHP: 7.4
-Tested up to: 6.7.2
+Tested up to: 6.7
 Stable tag: 1.2
 Description: Download images from Pixabay directly into your WordPress Media Library.
 Version: 1.2

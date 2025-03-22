@@ -7,14 +7,13 @@
  * Author URI: https://kaminoweb.com/
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * Tested up to: 6.7
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
 class PMD_Pixabay_Media_Downloader {
-
     private $api_key;
     const VERSION = '1.13'; // Updated version number
     const OPTION_NAME = 'pmd_pixabay_api_key';
@@ -22,7 +21,6 @@ class PMD_Pixabay_Media_Downloader {
     const SCRIPT_HANDLE = 'pmd-pixabay-scripts';
     const LOCALIZE_HANDLE = 'pmd_pixabay_ajax';
     const NONCE_NAME = 'pmd_pixabay_nonce';
-
     private static $settings_args; // Static property for settings arguments
 
     public function __construct() {
@@ -32,19 +30,16 @@ class PMD_Pixabay_Media_Downloader {
         // Define settings arguments as a static array
         self::$settings_args = array(
             'type'              => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
+            'sanitize_callback' => 'sanitize_text_field', // Sanitization callback added here
             'default'           => '',
         );
 
         // Register settings
         add_action( 'admin_init', array( $this, 'register_settings' ) );
-
         // Add admin menus
         add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
-
         // Enqueue scripts and styles
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
         // Register AJAX handlers
         add_action( 'wp_ajax_pmd_pixabay_search', array( $this, 'search_pixabay' ) );
         add_action( 'wp_ajax_pmd_pixabay_download_images', array( $this, 'download_images' ) );
@@ -137,18 +132,15 @@ class PMD_Pixabay_Media_Downloader {
             <h1><?php esc_html_e( 'Pixabay Media Downloader', 'pixabay-media-downloader' ); ?></h1>
             <form id="pmd-pixabay-search-form" class="pmd-search-form">
                 <input type="text" id="pmd-pixabay-search-query" placeholder="<?php esc_attr_e( 'Search for images...', 'pixabay-media-downloader' ); ?>" required />
-
                 <!-- Orientation Selection -->
                 <select id="pmd-pixabay-orientation" name="orientation">
                     <option value=""><?php esc_html_e( 'Any Orientation', 'pixabay-media-downloader' ); ?></option>
                     <option value="horizontal"><?php esc_html_e( 'Horizontal', 'pixabay-media-downloader' ); ?></option>
                     <option value="vertical"><?php esc_html_e( 'Vertical', 'pixabay-media-downloader' ); ?></option>
                 </select>
-
                 <!-- Picture Size Inputs -->
                 <input type="number" id="pmd-pixabay-min-width" name="min_width" placeholder="<?php esc_attr_e( 'Min Width (px)', 'pixabay-media-downloader' ); ?>" min="0" />
                 <input type="number" id="pmd-pixabay-min-height" name="min_height" placeholder="<?php esc_attr_e( 'Min Height (px)', 'pixabay-media-downloader' ); ?>" min="0" />
-
                 <button type="submit" class="button button-primary"><?php esc_html_e( 'Search', 'pixabay-media-downloader' ); ?></button>
             </form>
             <div id="pmd-pixabay-results"></div>
@@ -165,16 +157,12 @@ class PMD_Pixabay_Media_Downloader {
         if ( $hook !== 'media_page_pmd_pixabay_downloader' && $hook !== 'settings_page_pmd_pixabay_settings' ) {
             return;
         }
-
         // Enqueue CSS
         wp_enqueue_style( 'pmd-pixabay-styles', plugin_dir_url( __FILE__ ) . 'css/styles.css', array(), self::VERSION );
-
         // Enqueue Dashicons
         wp_enqueue_style( 'dashicons' );
-
         // Enqueue JavaScript
         wp_enqueue_script( self::SCRIPT_HANDLE, plugin_dir_url( __FILE__ ) . 'js/scripts-pixabay.js', array( 'jquery' ), self::VERSION, true );
-
         // Localize script with AJAX URL and nonce
         wp_localize_script( self::SCRIPT_HANDLE, self::LOCALIZE_HANDLE, array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -208,7 +196,6 @@ class PMD_Pixabay_Media_Downloader {
         // Check for cached data
         $transient_key = 'pmd_pixabay_' . md5( $query . '_' . $page . '_' . $orientation . '_' . $min_width . '_' . $min_height );
         $cached_data   = get_transient( $transient_key );
-
         if ( false !== $cached_data ) {
             wp_send_json_success( $cached_data );
         }
@@ -231,12 +218,11 @@ class PMD_Pixabay_Media_Downloader {
         }
 
         if ( ! empty( $min_height ) ) {
-            $api_url = add_query_arg( 'min_height', $api_url );
+            $api_url = add_query_arg( 'min_height', $min_height, $api_url );
         }
 
         // Make the API request
         $response = wp_remote_get( $api_url );
-
         if ( is_wp_error( $response ) ) {
             wp_send_json_error( __( 'Failed to connect to Pixabay API: ', 'pixabay-media-downloader' ) . $response->get_error_message() );
         }
@@ -254,7 +240,6 @@ class PMD_Pixabay_Media_Downloader {
 
         // Cache the data for 1 hour
         set_transient( $transient_key, $data, HOUR_IN_SECONDS );
-
         wp_send_json_success( $data );
     }
 
@@ -266,23 +251,10 @@ class PMD_Pixabay_Media_Downloader {
         check_ajax_referer( self::NONCE_NAME, 'nonce' ); // Nonce verification added
 
         // Retrieve and sanitize POST data
-        $images = array();
-
-        $processed_images = isset( $_POST['images'] ) ? (array) wp_unslash( $_POST['images'] ) : array(); // Inline unslash and cast
-        if ( is_array( $processed_images ) ) {
-            foreach ( $processed_images as $image_data ) { // Loop through the processed array
-                if ( is_array( $image_data ) ) { // Ensure $image_data is still an array (extra check)
-                    $images[] = array(
-                        'url' => isset( $image_data['url'] ) ? esc_url_raw( $image_data['url'] ) : '',
-                        'id'  => isset( $image_data['id'] ) ? sanitize_text_field( $image_data['id'] ) : uniqid(),
-                    );
-                }
-            }
-        }
-
+        $processed_images = isset( $_POST['images'] ) ? map_deep( wp_unslash( $_POST['images'] ), 'sanitize_text_field' ) : array(); // Sanitized properly
         $query  = isset( $_POST['query'] ) ? sanitize_text_field( wp_unslash( $_POST['query'] ) ) : '';
 
-        if ( empty( $images ) || ! is_array( $images ) ) {
+        if ( empty( $processed_images ) || ! is_array( $processed_images ) ) {
             wp_send_json_error( __( 'No images were selected for download.', 'pixabay-media-downloader' ) );
         }
 
@@ -292,11 +264,10 @@ class PMD_Pixabay_Media_Downloader {
 
         // Sanitize the search query for use in filenames
         $sanitized_query = sanitize_title( $query );
-
         $downloaded = 0;
         $failed     = 0;
 
-        foreach ( $images as $image ) {
+        foreach ( $processed_images as $image ) {
             $url = isset( $image['url'] ) ? esc_url_raw( $image['url'] ) : '';
             $id  = isset( $image['id'] ) ? sanitize_text_field( $image['id'] ) : uniqid();
 
@@ -310,7 +281,6 @@ class PMD_Pixabay_Media_Downloader {
 
             // Generate a meaningful filename
             $filename = "{$sanitized_query}_{$id}.{$extension}";
-
             $upload_dir = wp_upload_dir();
             $file_path  = trailingslashit( $upload_dir['path'] ) . $filename;
 
@@ -322,18 +292,15 @@ class PMD_Pixabay_Media_Downloader {
 
             // Download the image
             $image_response = wp_remote_get( $url );
-
             if ( is_wp_error( $image_response ) ) {
                 $failed++;
                 continue;
             }
 
             $image_data = wp_remote_retrieve_body( $image_response );
-
             if ( $image_data ) {
                 // Save the image to the uploads directory
                 $saved = file_put_contents( $file_path, $image_data ); // Save image data to file
-
                 if ( false === $saved ) {
                     $failed++;
                     continue;
@@ -352,7 +319,6 @@ class PMD_Pixabay_Media_Downloader {
 
                 // Insert the attachment
                 $attach_id = wp_insert_attachment( $attachment, $file_path ); // Insert attachment post type
-
                 if ( is_wp_error( $attach_id ) ) {
                     $failed++;
                     continue;
@@ -362,7 +328,6 @@ class PMD_Pixabay_Media_Downloader {
                 require_once( ABSPATH . 'wp-admin/includes/image.php' );
                 $attach_data = wp_generate_attachment_metadata( $attach_id, $file_path ); // Generate attachment metadata
                 wp_update_attachment_metadata( $attach_id, $attach_data ); // Update attachment metadata
-
                 $downloaded++;
             } else {
                 $failed++;
